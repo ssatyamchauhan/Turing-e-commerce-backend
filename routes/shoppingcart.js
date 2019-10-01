@@ -417,5 +417,65 @@ module.exports = (shoppingcart,knex,jwtVerify) => {
             })
         })
 
+        shoppingcart.get('/getSaved/:cart_id', jwtVerify, (req,res) => {
+            knex.select(
+                'sl.item_id',
+                'p.name',
+                'sl.attributes',
+                'p.price'
+            )
+            .from('save_later as sl')
+            .join('product as p',
+                'p.product_id','=',
+                'sl.product_id'
+                )
+            .where('sl.cart_id',req.params.cart_id)
+                .then(data => {
+                    res.json(data)
+                })
+                .catch(err => {
+                    res.json(err)
+                })
+        })
+
+        shoppingcart.get('/moveToCart/:item_id',jwtVerify, (req,res) => {
+            knex.select('*')
+            .from('save_later')
+            .where('save_later.item_id',req.params.item_id)
+                .then((data) =>{
+                    // console.log(data)
+                    data[0]["added_on"] = new Date()
+                    console.log(data)
+                    knex('shopping_cart')
+                    .insert(data[0])
+                        .then(() =>{
+                            knex('save_later')
+                            .where('save_later.item_id',req.params.item_id)
+                            .del()
+                                .then(() =>{
+                                    res.json({status:200,message:"moved successfully!"})
+                                })
+                                .catch(err => {{
+                                    res.json(err)
+                                }})
+                        })
+                        .catch(err => {
+                            res.json(err)
+                        })
+                })
+                .catch(err => res.json(err))
+        })
+
+        shoppingcart.delete('/removeProduct/:item_id',jwtVerify, (req,res) =>{
+            knex('shopping_cart')
+            .where('shopping_cart.item_id',req.params.item_id)
+            .del()
+                .then(() =>{
+                    res.json({status:200,message:"removed successfully"})
+                })
+                .catch(err => {
+                    res.json(err)
+                }) 
+        })
 
 }
