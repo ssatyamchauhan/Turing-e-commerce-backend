@@ -12,6 +12,7 @@ module.exports = (attributes,knex)=>{
     });
 
     attributes.get('/:attribute_id',(req,res)=>{
+        
         knex.select('*').from('attribute')
         .where('attribute_id',req.params.attribute_id)
         .then((data)=>{return res.send(data)})

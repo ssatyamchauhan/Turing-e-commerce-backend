@@ -30,12 +30,23 @@ module.exports = (products,knex)=>{
         .catch((err)=>{console.log(err);return res.send(err.message)})
     })
 
-    products.get('/inDepartments/:department_id',(req,res)=>{
+    products.get('/inDepartment/:department_id',(req,res)=>{
         knex.select('p.product_id', 'p.name', 'p.description', 'p.price', 'p.discounted_price', 'p.thumbnail').from('product as p').join('product_category as c','c.product_id','=','p.product_id').join('category as C','C.category_id','=','c.category_id').where('C.department_id',req.params.department_id)
         .then((data)=>{return res.json({"count":data.length,"rows":data})})
         .catch((err)=>{return res.json(err.message)})
     })
     
+    products.get('/:product_id/details',(req,res) => {
+        knex('product as p' ).select('p.product_id',  'p.name', 'p.description', 'p.price', 'p.discounted_price', 'p.image', 'p.image_2').where('p.product_id', req.params.product_id)
+        .then(data => res.json(data))
+        .catch(err => res.json(err.message))
+    })
     
+    products.get('/:product_id/locations',(req,res) => {
+        knex.select('pc.category_id', 'c.name as category_name', 'c.department_id', 'd.name as department_name').from('product_category as pc').join('category as c', 'pc.category_id', '=', 'c.category_id').join('department as d', 'd.department_id','=','c.department_id').where('pc.product_id',req.params.product_id)
+        .then(data => res.json(data))
+        .catch(err => res.json(err.message))
+    })
+
 
 }

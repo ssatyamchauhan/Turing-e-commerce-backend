@@ -7,7 +7,7 @@ module.exports = (departments,knex)=>{
         })
         .catch((err)=>{
             console.log('you are getting error',err)
-        })
+        })                  
     });
 
 
