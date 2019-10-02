@@ -6,11 +6,9 @@ module.exports = (req,res,next) => {
     if(token !== undefined){
         if(token.startsWith('key=')){
             token = token.slice(4, token.length)
-            console.log(token)
             jwt.verify(token, process.env.SECRET, (err, decode) =>{
                 if(!err){      
                     req.email = decode.email;
-                    req.decode =decode;
                     next();
                 }
                 else{

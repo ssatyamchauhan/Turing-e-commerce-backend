@@ -46,6 +46,18 @@ var shoppingcart = express.Router();
 app.use('/shoppingcart',shoppingcart);
 require('./routes/shoppingcart')(shoppingcart,knex,jwtVerify);
 
+var orders = express.Router();
+app.use('/', orders);
+require('./routes/orders')(orders,knex,jwtVerify)
+
+var shipping = express.Router();
+app.use('/shipping', shipping);
+require('./routes/shipping')(shipping,knex,jwtVerify)
+
+var tax = express.Router()
+app.use('/tax', tax)
+require('./routes/tax')(tax,knex,jwtVerify)
+
 app.listen(PORT,()=>{
     console.log('Your app is listening',PORT)
 });
