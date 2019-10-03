@@ -1,4 +1,4 @@
-module.exports = (products,knex)=>{
+module.exports = (products,knex,jwtVerify)=>{
     products.get('/',(req ,res)=>{
         var page = req.query.page;
         var limits = req.query.limit;
@@ -48,5 +48,45 @@ module.exports = (products,knex)=>{
         .catch(err => res.json(err.message))
     })
 
+    products.post('/:product_id/reviews', jwtVerify, (req,res) =>{
+        var postReview = req.body;
+        knex.select(
+            'customer_id'
+        )
+        .from('customer')
+        .where('customer.email',req.email)
+            .then(data => {
+                postReview["customer_id"] = data[0].customer_id
+                postReview["created_on"] = new Date()
+                postReview["product_id"] = req.params.product_id;
+
+                knex('review')
+                .insert(postReview)
+                    .then(data => {
+                        res.json({status:200,message:"review has posted successfully!"})
+                    })
+                    .catch(err => {
+                        res.json(err)
+                    })
+            })
+    })
+
+    products.get('/:product_id/reviews', jwtVerify, (req,res) => {
+        knex.select(
+            'customer.name',
+            'review.review',
+            'review.rating',
+            'review.created_on'
+        )
+        .from('customer')
+        .join('review', 'customer.customer_id','=','review.customer_id')
+        .where('review.product_id',req.params.product_id)
+            .then(data => {
+                res.json(data)
+            })
+            .catch(err => {
+                res.json(err)
+            })
+    })
 
 }

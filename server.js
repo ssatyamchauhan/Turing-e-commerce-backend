@@ -36,7 +36,7 @@ require('./routes/attributes')(attributes,knex)
 //Products section
 var products = express.Router();
 app.use('/products',products);
-require('./routes/products')(products,knex);
+require('./routes/products')(products,knex,jwtVerify);
 
 var customers = express.Router();
 app.use('/',customers);
