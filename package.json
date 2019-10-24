@@ -18,11 +18,11 @@
   },
   "homepage": "https://github.com/ssatyamchauhan/E-commerce-webApi#readme",
   "dependencies": {
-    "dotenv": "^8.1.0",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "generate-unique-id": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
-    "knex": "^0.19.4",
+    "knex": "^0.19.5",
     "mysql": "^2.17.1",
     "underscore": "^1.9.1"
   }
